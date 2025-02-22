@@ -26,71 +26,67 @@ SQL Streaming Data
     Установленные пакеты:
         wget, unzip, python3, python3-pip, apt.
 
-## Установка компонентов
-### 1. Установка Apache Kafka (3.6.1)
-
-    Скачивание и распаковка:
-        Перейдите в домашнюю директорию:
-        bash cd ~
+# Установка компонентов
+## 1. Установка Apache Kafka (3.6.1)
+### Скачивание и распаковка:
+### Перейдите в домашнюю директорию:
+        cd ~
 
 ### Скачайте Kafka 3.6.1:
-bash
 
     wget https://kafka.apache.org/downloads/kafka_2.13-3.6.1.tgz
     tar -xzf kafka_2.13-3.6.1.tgz
     mv kafka_2.13-3.6.1 kafka
 
-    Убедитесь, что путь установлен (например, /home/test/kafka/).
+Убедитесь, что путь установлен (например, /home/test/kafka/).
 
 ### Запуск Kafka:
 
-    Требуются два терминала WSL:
-        Первый терминал (Zookeeper):
+Требуются два терминала WSL:
+### Первый терминал (Zookeeper):
         ~/kafka/bin/zookeeper-server-start.sh ~/kafka/config/zookeeper.properties &
 
-Второй терминал (Kafka):
+### Второй терминал (Kafka):
+        ~/kafka/bin/kafka-server-start.sh ~/kafka/config/server.properties &
 
-    ~/kafka/bin/kafka-server-start.sh ~/kafka/config/server.properties &
-
-Проверьте процессы:
-
+### Проверьте процессы:
     ps aux | grep kafka
 
-Создание топика:
+### Создание топика:
 
-    В любом терминале создайте топик для событий:
+### В любом терминале создайте топик для событий:
         ~/kafka/bin/kafka-topics.sh --create --topic website_events --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 
 ## 2. Установка Apache Flink (1.19.1)
 
 ### Скачивание и распаковка:
-    Скачайте Flink 1.19.1:
+Скачайте Flink 1.19.1:
 
     wget https://archive.apache.org/dist/flink/flink-1.19.1/flink-1.19.1-bin-scala_2.12.tgz
     tar -xzf flink-1.19.1-bin-scala_2.12.tgz
     mv flink-1.19.1 flink
 
-    Убедитесь, что путь установлен (например, /home/test/flink/).
+Убедитесь, что путь установлен (например, /home/test/flink/).
 
 ## Установка Kafka-коннектора:
 
-    Скачайте и установите flink-connector-kafka-3.2.0-1.19.jar:
+Скачайте и установите flink-connector-kafka-3.2.0-1.19.jar:
 
     wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-kafka/3.2.0-1.19/flink-connector-kafka-3.2.0-1.19.jar
     mv flink-connector-kafka-3.2.0-1.19.jar ~/flink/lib/
 
-    Убедитесь, что версия совместима с Scala 2.12 (имя файла должно содержать _2.12).
+Убедитесь, что версия совместима с Scala 2.12 (имя файла должно содержать _2.12).
 
 ## Запуск Flink:
 
-    Запустите локальный кластер:
+### Запустите локальный кластер:
     ~/flink/bin/start-cluster.sh
 
-    Проверьте веб-интерфейс: http://localhost:8081.
+Проверьте веб-интерфейс: http://localhost:8081.
 
 ## 3. Установка Python-зависимостей
 
-    Установите Python и необходимые библиотеки:
+Установите Python и необходимые библиотеки:
 
     sudo apt update
     sudo apt install python3 python3-pip -y
@@ -114,9 +110,9 @@ bash
 
 ## Конфигурация веб-приложения и Python-скриптов
 
-    Все файлы размещены в /home/test/.
-    Убедитесь, что пути к шаблонам (templates/) корректны в файле website.py.
-    Код доступен в отдельных файлах: website.py, templates/home.html, templates/product.html, analyze.py (см. инструкции по использованию).
+Все файлы размещены в /home/test/.
+Убедитесь, что пути к шаблонам (templates/) корректны в файле website.py.
+Код доступен в отдельных файлах: website.py, templates/home.html, templates/product.html, analyze.py (см. инструкции по использованию).
 
 # Использование
 ## Запуск системы
@@ -133,7 +129,7 @@ bash
 ## Запустите Flink SQL Client:
     ~/flink/bin/sql-client.sh
 
-    Выполните SQL-запросы, описанные в документации проекта (доступны в отдельном файле или проекте).
+Выполните SQL-запросы, описанные в документации проекта (доступны в отдельном файле или проекте).
 
 ## Запустите Python-анализ:
     python3 ~/analyze.py
