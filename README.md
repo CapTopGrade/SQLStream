@@ -27,13 +27,11 @@ SQL Streaming Data
         wget, unzip, python3, python3-pip, apt.
 
 ## Установка компонентов
-1. Установка Apache Kafka (3.6.1)
+### 1. Установка Apache Kafka (3.6.1)
 
     Скачивание и распаковка:
         Перейдите в домашнюю директорию:
-        bash
-
-cd ~
+        bash cd ~
 
 ### Скачайте Kafka 3.6.1:
 bash
@@ -48,32 +46,25 @@ bash
 
     Требуются два терминала WSL:
         Первый терминал (Zookeeper):
-        bash
-
-~/kafka/bin/zookeeper-server-start.sh ~/kafka/config/zookeeper.properties &
+        ~/kafka/bin/zookeeper-server-start.sh ~/kafka/config/zookeeper.properties &
 
 Второй терминал (Kafka):
-bash
 
     ~/kafka/bin/kafka-server-start.sh ~/kafka/config/server.properties &
 
 Проверьте процессы:
-bash
 
     ps aux | grep kafka
 
 Создание топика:
 
     В любом терминале создайте топик для событий:
-    bash
-
         ~/kafka/bin/kafka-topics.sh --create --topic website_events --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 
 ## 2. Установка Apache Flink (1.19.1)
 
-    Скачивание и распаковка:
-        Скачайте Flink 1.19.1:
-        bash
+### Скачивание и распаковка:
+    Скачайте Flink 1.19.1:
 
     wget https://archive.apache.org/dist/flink/flink-1.19.1/flink-1.19.1-bin-scala_2.12.tgz
     tar -xzf flink-1.19.1-bin-scala_2.12.tgz
@@ -84,7 +75,6 @@ bash
 ## Установка Kafka-коннектора:
 
     Скачайте и установите flink-connector-kafka-3.2.0-1.19.jar:
-    bash
 
     wget https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-kafka/3.2.0-1.19/flink-connector-kafka-3.2.0-1.19.jar
     mv flink-connector-kafka-3.2.0-1.19.jar ~/flink/lib/
@@ -94,16 +84,13 @@ bash
 ## Запуск Flink:
 
     Запустите локальный кластер:
-    bash
+    ~/flink/bin/start-cluster.sh
 
-        ~/flink/bin/start-cluster.sh
-
-        Проверьте веб-интерфейс: http://localhost:8081.
+    Проверьте веб-интерфейс: http://localhost:8081.
 
 ## 3. Установка Python-зависимостей
 
     Установите Python и необходимые библиотеки:
-    bash
 
     sudo apt update
     sudo apt install python3 python3-pip -y
@@ -139,50 +126,33 @@ bash
     Создайте или проверьте файлы в /home/test/:
         Скопируйте или создайте файлы website.py, templates/home.html, templates/product.html, analyze.py (см. инструкции по установке и примеры кода в документации проекта).
     Запустите веб-приложение:
-    bash
-
-python3 ~/website.py
+    python3 ~/website.py
 
     Откройте http://localhost:5000 в браузере и взаимодействуйте с сайтом (переходите по ссылкам и кликайте).
 
-Запустите Flink SQL Client:
-bash
-
-~/flink/bin/sql-client.sh
+## Запустите Flink SQL Client:
+    ~/flink/bin/sql-client.sh
 
     Выполните SQL-запросы, описанные в документации проекта (доступны в отдельном файле или проекте).
 
-Запустите Python-анализ:
-bash
-
+## Запустите Python-анализ:
     python3 ~/analyze.py
 
-Тестирование
-
+# Тестирование
     Генерируйте события (1000 событий/мин) в течение 10 минут, взаимодействуя с сайтом.
     Измерьте производительность:
         Латентность: Используйте time для измерения времени обработки запросов в Flink SQL и Python-скриптах.
         CPU: Используйте top в WSL для мониторинга использования ресурсов.
     Сравните результаты Flink SQL и Python, фиксируя точность подсчётов событий и время обработки (см. примеры метрик в документации проекта).
 
-Отладка и устранение неисправностей
-Общие ошибки
-
+# Отладка и устранение неисправностей
+### Общие ошибки
     Kafka не запускается: Проверьте, запущен ли Zookeeper, и убедитесь, что порты (2181 для Zookeeper, 9092 для Kafka) свободны. Проверьте логи в /home/test/kafka/logs/.
     Flink не видит Kafka: Убедитесь, что flink-connector-kafka-3.2.0-1.19.jar находится в ~/flink/lib/ и перезапустите Flink. Проверьте логи в /home/test/flink/log/.
     Ошибки JSON в Flink: Проверьте данные в Kafka через kafka-console-consumer.sh --topic website_events --bootstrap-server localhost:9092 --from-beginning. Убедитесь, что website.py отправляет корректный JSON (например, {"event_type": "view", "page": "/home", "ts": 1677050132000}).
     Python не подключается к Kafka: Проверьте настройки bootstrap_servers в website.py и analyze.py. Убедитесь, что Kafka запущена и доступна на localhost:9092.
 
-Логи
-
+### Логи
     Kafka: Логи доступны в /home/test/kafka/logs/.
     Flink: Логи доступны в /home/test/flink/log/.
     Python: Выводятся в консоль при запуске website.py и analyze.py.
-
-Лицензия
-Проект распространяется под лицензией MIT. См. файл LICENSE (если требуется, добавьте его в репозиторий).
-Контакты для поддержки
-
-    Автор: Дацык Р.В. (r.datsyk@spbu.ru)
-    Руководитель: Профессор Богданов А.В. (a.bogdanov@spbu.ru)
-    Репозиторий: [Не указан, создайте на GitHub/GitLab для открытого доступа]
